@@ -6,27 +6,8 @@ const auth = require('../../middleware/auth');
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
 const {check, validationResult} = require('express-validator');
-//@route  GET api/profile/me
-//@desc   Get current users profile
-//@access Private
-/*router.get('/me', auth, async (req, res) => {
-  try {
-    const profile = await (
-      await Profile.findOne({user: req.user.id})
-    ).populate('user', ['name', 'avatar']);
+const Post = require('../../models/Post');
 
-    if (!profile) {
-      return res.status(400).json({msg: 'There is no profile for this user'});
-    }
-
-    res.json(profile.populate('user', ['name', 'avatar']));
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-});
-*/
-//---------------------------------------------------------------------------------------------
 // @route    GET api/profile/me
 // @desc     Get current users profile
 // @access   Private
@@ -170,7 +151,8 @@ router.get('/user/:user_id', async (req, res) => {
 
 router.delete('/', auth, async (req, res) => {
   try {
-    //@todo -- remove users posts
+    //Remove User Posts
+    await Post.deleteMany({user: req.user.id});
 
     // Remove profile
     await Profile.findOneAndRemove({user: req.user.id});
